@@ -1,21 +1,22 @@
-package com.desafio.coopeuch.service.serviceImpl;
+package com.desafio.coopeuch.service.impl;
 
 import com.desafio.coopeuch.model.entity.Task;
 import com.desafio.coopeuch.model.request.TaskRequest;
 import com.desafio.coopeuch.model.response.TaskResponse;
 import com.desafio.coopeuch.repository.TaskRepository;
 import com.desafio.coopeuch.service.TaskService;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
 import java.util.List;
 
 @Service
+@Slf4j
 public class TaskServiceImpl implements TaskService {
 
     private final TaskRepository taskRepository;
     private static final String ERROR="error";
-    private static final String UNEXPECTED_ERROR="unexpected error: ";
 
     public TaskServiceImpl(TaskRepository taskRepository) {
         this.taskRepository = taskRepository;
@@ -28,7 +29,7 @@ public class TaskServiceImpl implements TaskService {
         try {
             taskRepository.save(task);
         } catch (Exception e) {
-            System.out.println(UNEXPECTED_ERROR + e);
+            log.error("", e);
             return ERROR;
         }
         return "task added";
@@ -43,7 +44,7 @@ public class TaskServiceImpl implements TaskService {
                 taskRepository.save(task);
             }
         } catch (Exception e) {
-            System.out.println(UNEXPECTED_ERROR + e);
+            log.error("", e);
             return ERROR;
         }
         return "task edited";
@@ -64,7 +65,7 @@ public class TaskServiceImpl implements TaskService {
                 response.add(tr);
             }
         } catch (Exception e) {
-            System.out.println(UNEXPECTED_ERROR + e);
+            log.error("", e);
         }
         return response;
     }
@@ -76,7 +77,7 @@ public class TaskServiceImpl implements TaskService {
                 taskRepository.deleteById(id);
             }
         }catch (Exception e) {
-            System.out.println(UNEXPECTED_ERROR + e);
+            log.error("", e);
             return ERROR;
         }
         return "task deleted";
