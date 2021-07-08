@@ -8,6 +8,7 @@ import com.desafio.coopeuch.service.TaskService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -25,7 +26,7 @@ public class TaskServiceImpl implements TaskService {
     @Override
     public String add(TaskRequest request) {
         Task task = requestToTask(request, true);
-
+        task.setCreationDate(LocalDateTime.now());
         try {
             taskRepository.save(task);
         } catch (Exception e) {

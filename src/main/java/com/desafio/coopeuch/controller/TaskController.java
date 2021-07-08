@@ -10,6 +10,7 @@ import java.util.List;
 
 @RestController
 @RequestMapping("/task")
+@CrossOrigin(origins = "http://localhost:4200")
 public class TaskController {
 
     private final TaskService taskService;
@@ -20,7 +21,7 @@ public class TaskController {
 
     @PostMapping
     @ApiOperation(value="Para agregar una tarea")
-    public String addNewUser(@RequestBody TaskRequest request) {
+    public String addNewTask(@RequestBody TaskRequest request) {
 
         if(taskRequestCheck(request, true)){
             return taskService.add(request);
@@ -31,7 +32,7 @@ public class TaskController {
 
     @PutMapping
     @ApiOperation(value="Para editar una tarea")
-    public String editUser(@RequestBody TaskRequest request) {
+    public String editTask(@RequestBody TaskRequest request) {
         if(taskRequestCheck(request, false)){
             return taskService.edit(request);
         } else {
