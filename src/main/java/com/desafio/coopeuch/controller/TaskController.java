@@ -54,8 +54,7 @@ public class TaskController {
 
     private boolean taskRequestCheck(TaskRequest request, boolean add) {
         if(add) {
-            return request.getDescription() != null && !request.getDescription().isEmpty()
-                    && request.getCreationDate() != null;
+            return request.getDescription() != null && !request.getDescription().isEmpty();
         } else {
             return request.getId() != null &&
                     request.getDescription() != null && !request.getDescription().isEmpty()
