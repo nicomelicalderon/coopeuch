@@ -1,6 +1,7 @@
 package com.desafio.coopeuch.controller;
 
 import com.desafio.coopeuch.model.request.TaskRequest;
+import com.desafio.coopeuch.model.response.MessageResponse;
 import com.desafio.coopeuch.model.response.TaskResponse;
 import com.desafio.coopeuch.service.TaskService;
 import io.swagger.annotations.ApiOperation;
@@ -19,25 +20,31 @@ public class TaskController {
         this.taskService = taskService;
     }
 
+    private static final String MISSING = "Something is missing in the request";
+
     @PostMapping
     @ApiOperation(value="Para agregar una tarea")
-    public String addNewTask(@RequestBody TaskRequest request) {
+    public MessageResponse addNewTask(@RequestBody TaskRequest request) {
+        MessageResponse response = new MessageResponse();
 
         if(taskRequestCheck(request, true)){
-            return taskService.add(request);
+            response = taskService.add(request);
         } else {
-            return "Something is missing in the request";
+            response.setMessage(MISSING);
         }
+        return response;
     }
 
     @PutMapping
     @ApiOperation(value="Para editar una tarea")
-    public String editTask(@RequestBody TaskRequest request) {
+    public MessageResponse editTask(@RequestBody TaskRequest request) {
+        MessageResponse response = new MessageResponse();
         if(taskRequestCheck(request, false)){
-            return taskService.edit(request);
+            response = taskService.edit(request);
         } else {
-            return "Something is missing in the request";
+            response.setMessage(MISSING);
         }
+        return response;
     }
 
     @GetMapping
@@ -46,9 +53,15 @@ public class TaskController {
         return taskService.list();
     }
 
+    @GetMapping("/id")
+    @ApiOperation(value="Para obtener una tarea")
+    public TaskResponse getTask(Long id) {
+        return taskService.getTask(id);
+    }
+
     @DeleteMapping
     @ApiOperation(value="Para eliminar una tarea")
-    public String deleteTask(Long id) {
+    public MessageResponse deleteTask(Long id) {
         return taskService.remove(id);
     }
 

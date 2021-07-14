@@ -2,6 +2,7 @@ package com.desafio.coopeuch.service.impl;
 
 import com.desafio.coopeuch.model.entity.Task;
 import com.desafio.coopeuch.model.request.TaskRequest;
+import com.desafio.coopeuch.model.response.MessageResponse;
 import com.desafio.coopeuch.model.response.TaskResponse;
 import com.desafio.coopeuch.repository.TaskRepository;
 import com.desafio.coopeuch.service.TaskService;
@@ -24,31 +25,37 @@ public class TaskServiceImpl implements TaskService {
     }
 
     @Override
-    public String add(TaskRequest request) {
+    public MessageResponse add(TaskRequest request) {
+        MessageResponse response = new MessageResponse();
         Task task = requestToTask(request, true);
         task.setCreationDate(LocalDateTime.now());
         try {
+            response.setMessage("task added");
             taskRepository.save(task);
         } catch (Exception e) {
             log.error("", e);
-            return ERROR;
+            response.setMessage(ERROR);
         }
-        return "task added";
+        return response;
     }
 
     @Override
-    public String edit(TaskRequest request) {
+    public MessageResponse edit(TaskRequest request) {
+        MessageResponse response = new MessageResponse();
         Task task = requestToTask(request, false);
 
         try {
             if(taskRepository.existsById(task.getId())){
+                response.setMessage("task edited");
                 taskRepository.save(task);
+            } else {
+                response.setMessage("task not found");
             }
         } catch (Exception e) {
             log.error("", e);
-            return ERROR;
+            response.setMessage(ERROR);
         }
-        return "task edited";
+        return response;
     }
 
     @Override
@@ -72,16 +79,35 @@ public class TaskServiceImpl implements TaskService {
     }
 
     @Override
-    public String remove(Long id) {
+    public TaskResponse getTask(Long id) {
+        TaskResponse response = new TaskResponse();
+        try {
+            Task task = taskRepository.getOneTask(id);
+            response.setId(task.getId());
+            response.setDescription(task.getDescription());
+            response.setCreationDate(task.getCreationDate());
+            response.setActive(task.isActive());
+        } catch (Exception e) {
+            log.error("", e);
+        }
+        return response;
+    }
+
+    @Override
+    public MessageResponse remove(Long id) {
+        MessageResponse response = new MessageResponse();
         try {
             if (taskRepository.existsById(id)) {
+                response.setMessage("task deleted");
                 taskRepository.deleteById(id);
+            } else {
+                response.setMessage("task not found");
             }
         }catch (Exception e) {
             log.error("", e);
-            return ERROR;
+            response.setMessage(ERROR);
         }
-        return "task deleted";
+        return response;
     }
 
     private Task requestToTask(TaskRequest r, boolean add) {

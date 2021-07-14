@@ -2,6 +2,7 @@ package com.desafio.coopeuch.service.impl;
 
 import com.desafio.coopeuch.model.entity.Task;
 import com.desafio.coopeuch.model.request.TaskRequest;
+import com.desafio.coopeuch.model.response.MessageResponse;
 import com.desafio.coopeuch.model.response.TaskResponse;
 import com.desafio.coopeuch.repository.TaskRepository;
 import org.assertj.core.api.Assertions;
@@ -18,6 +19,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.anyLong;
 
 @RunWith(MockitoJUnitRunner.class)
 public class TaskServiceTest {
@@ -35,8 +37,8 @@ public class TaskServiceTest {
         taskRequest.setCreationDate(LocalDateTime.now());
         taskRequest.setActive(true);
         Mockito.when(taskRepository.save(any(Task.class))).thenReturn(new Task());
-        String result = taskService.add(taskRequest);
-        Assertions.assertThat(result).isEqualTo("task added");
+        MessageResponse response = taskService.add(taskRequest);
+        Assertions.assertThat(response.getMessage()).isEqualTo("task added");
     }
 
     @Test
@@ -47,8 +49,9 @@ public class TaskServiceTest {
         taskRequest.setCreationDate(LocalDateTime.now());
         taskRequest.setActive(true);
         Mockito.when(taskRepository.save(any(Task.class))).thenReturn(new Task());
-        String result = taskService.edit(taskRequest);
-        Assertions.assertThat(result).isEqualTo("task edited");
+        Mockito.when(taskRepository.existsById(anyLong())).thenReturn(true);
+        MessageResponse response = taskService.edit(taskRequest);
+        Assertions.assertThat(response.getMessage()).isEqualTo("task edited");
     }
 
     @Test
@@ -66,10 +69,23 @@ public class TaskServiceTest {
     }
 
     @Test
+    public void getTaskTest() {
+        Task task = new Task();
+        task.setId(2L);
+        task.setDescription("test");
+        task.setCreationDate(LocalDateTime.now());
+        task.setActive(true);
+        Mockito.when(taskRepository.getOneTask(2L)).thenReturn(task);
+        TaskResponse taskResponse = taskService.getTask(2L);
+        Assertions.assertThat(taskResponse).isNotNull();
+    }
+
+    @Test
     public void removeTestOk() {
         Mockito.doNothing().when(taskRepository).deleteById(any());
-        String result = taskService.remove(any());
-        Assertions.assertThat(result).isEqualTo("task deleted");
+        Mockito.when(taskRepository.existsById(anyLong())).thenReturn(true);
+        MessageResponse response = taskService.remove(2L);
+        Assertions.assertThat(response.getMessage()).isEqualTo("task deleted");
     }
 
     @After
