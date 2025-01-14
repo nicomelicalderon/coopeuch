@@ -33,7 +33,7 @@ public class TaskServiceImpl implements TaskService {
             response.setMessage("task added");
             taskRepository.save(task);
         } catch (Exception e) {
-            log.error("", e);
+            log.error("add error", e);
             response.setMessage(ERROR);
         }
         return response;
@@ -52,7 +52,7 @@ public class TaskServiceImpl implements TaskService {
                 response.setMessage("task not found");
             }
         } catch (Exception e) {
-            log.error("", e);
+            log.error("edit error", e);
             response.setMessage(ERROR);
         }
         return response;
@@ -73,7 +73,7 @@ public class TaskServiceImpl implements TaskService {
                 response.add(tr);
             }
         } catch (Exception e) {
-            log.error("", e);
+            log.error("list error", e);
         }
         return response;
     }
@@ -88,7 +88,7 @@ public class TaskServiceImpl implements TaskService {
             response.setCreationDate(task.getCreationDate());
             response.setActive(task.isActive());
         } catch (Exception e) {
-            log.error("", e);
+            log.error("get task error", e);
         }
         return response;
     }
@@ -104,7 +104,7 @@ public class TaskServiceImpl implements TaskService {
                 response.setMessage("task not found");
             }
         }catch (Exception e) {
-            log.error("", e);
+            log.error("remove error", e);
             response.setMessage(ERROR);
         }
         return response;
